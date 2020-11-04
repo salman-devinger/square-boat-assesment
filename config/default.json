@@ -1,4 +1,3 @@
 {
-    "mongoURI" : "mongodb+srv://mernuser:mern123@cluster0.hj6gg.mongodb.net/MERN?retryWrites=true&w=majority",
-    "jwtSecret" : "MyJWTSecretToken"
+    
 }
