@@ -1,0 +1,52 @@
+<br/><h1 align="center" style="color: #4d1d5e;">{{list_name}}</h1>  
+  <br/>  
+  <div id="exTab1" class="container">
+
+  <div id="test-list" >
+    <ul class="product-list-basic list" id="list">
+      {{#each res}}
+      <div class="card float-left" onclick="document.location.href='/appdetails?pkg={{this.package_name}}'">
+        <div class="row">
+            <div class="col-sm-5">
+                <img class="d-block w-100" src="{{this.icon}}" alt="">
+            </div>
+            <div class="col-sm-7">
+                <div class="card-block">
+                <!--           <h4 class="card-title">Small card</h4> -->
+                <h6>{{this.title}}</h6>
+                <h9 href="#" class="float-left" >{{this.developer}}</h9>
+                </div>
+            </div>
+        </div>
+    </div>
+      {{/each}}
+    </ul>
+    <ul class="pagination"></ul>
+  </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+  ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script>
+  var monkeyList = new List('test-list', {
+    valueNames: ['name'],
+    page: 20,
+    pagination: true
+  });
+  let res = {{{JSONstringify res}}};
+  // Add active class to the current button (highlight it)
+  var btnContainer = document.getElementById("myBtnContainer");
+  var btns = btnContainer.getElementsByClassName("btn");
+  console.log('Buttons: ', btns)
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function(){
+      //var current = document.getElementsByClassName("active");
+      var current = $('#myBtnContainer .active');
+      console.log("Current: ", current);
+      current[0].className = current[0].className.replace(" active", "");
+      this.className += " active";
+    });
+  }
+
+</script>

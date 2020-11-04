@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    .modal-body {
+        margin-left: 20px;
+    }
+    /* Full-width input fields */
+    input[type=text],
+    input[type=number],
+    input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    .cust-dropdown {
+        width: 100%;
+        padding: 5px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    input[type=text]:focus,
+    input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    hr {
+        border: 1px solid #f1f1f1;
+        margin-bottom: 25px;
+    }
+
+    /* Set a style for all buttons */
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+    }
+
+    button:hover {
+        opacity: 1;
+    }
+
+    /* Extra styles for the cancel button */
+    .cancelbtn {
+        padding: 14px 20px;
+        background-color: #f44336;
+    }
+
+    /* Float cancel and signup buttons and add an equal width */
+    .cancelbtn,
+    .signupbtn {
+        float: left;
+        width: 50%;
+    }
+
+    /* Add padding to container elements */
+    .container {
+        padding: 16px;
+    }
+
+    /* Clear floats */
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    /* Change styles for cancel button and signup button on extra small screens */
+    @media screen and (max-width: 300px) {
+
+        .cancelbtn,
+        .signupbtn {
+            width: 100%;
+        }
+    }
+</style>
+
+<body><br />
+
+    <div style="width: 30%; margin: auto;">
+        <div class="container">
+            <h1>{{movieName}}</h1>
+            <hr>
+
+            <label for="name"><b>Theater</b></label>
+            <select class="form-control cust-dropdown" id="theaterId" name="theaterId" data-validation="required">
+                {{#each theaterList}}
+                <option value="{{this.THEATER_ID}}">
+                    {{this.THEATER_NAME}}
+                </option>
+                {{/each}}
+            </select>
+
+            <label for="name"><b>Time Slot</b></label>
+            <select class="form-control cust-dropdown" id="slotId" name="slotId" data-validation="required">
+                {{#each slotList}}
+                <option value="{{this.SLOT_ID}}">
+                    {{this.SLOT_DTL}}
+                </option>
+                {{/each}}
+            </select>
+
+            <label for="psw"><b>No. of Seats</b></label>
+            <input type="text" placeholder="Enter No. of Seats" id="ticketCount" required>
+
+            <div class="clearfix">
+                <button type="button" class="cancelbtn" id="cancelbtn">Cancel</button>
+                <button type="submit" class="signupbtn" id="signupbtn">Book</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal HTML -->
+    <div id="bookingModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Window</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" class="close" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading/Processing Image -->
+    <div id="loadimage" style="display: none;">
+        <div class="ScaleLoader" align="center"
+            style="top: 45%;position: fixed;z-index: 9999999;left: 0;right: 0;margin-left: auto;margin-right: auto;">
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.1s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.2s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.3s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.4s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.5s infinite both; display: inline-block;">
+            </div>
+            <p style="font-size: 20px;color: #666;">Loading...</p>
+        </div>
+        <div id="loadingLayer" class="fade-layer"></div>
+    </div>
+    <!-- End Loading Image -->
+
+    
+</body>
+
+</html>
+
+<script type="text/javascript">
+    const movieData = {{#if movieData}}{{{JSONstringify movieData}}}{{else}} [] {{/if}};
+    const slotList = {{#if movieData}}{{{JSONstringify slotList}}}{{else}} [] {{/if}};
+    const userId = {{userId}};
+    const movieName= '{{movieName}}';
+
+    $('#theaterId').change(() => {
+        const theaterId = $('#theaterId').val().trim();
+        //const filteresTimeSlot = _.filter(movieData, (itm) => { parseInt(itm.THEATER_ID) = parseInt(theaterId) });
+        let timeSlotSel = $('#slotId');
+        timeSlotSel.empty();
+        _.each(movieData, function (itm, idx) {
+            if (parseInt(itm.THEATER_ID) == parseInt(theaterId)) {
+                timeSlotSel.append($("<option></option>")
+                    .attr("value", itm.SLOT_ID).text(itm.SLOT_DTL));
+            }
+        });
+    });
+    $('#theaterId').trigger("change");
+
+    $('#signupbtn').click(() => {
+        $('#loadimage').show();
+        bookMovie();
+    });
+
+    $("#bookingModal").on('show.bs.modal', function(event) {
+        //showQuestion(event, $(this));
+    });
+    function bookMovie() {
+
+        const theaterId = parseInt($('#theaterId').val().trim()),
+            slotId = parseInt($('#slotId').val().trim());
+
+        let movieObj = {};
+        movieObj.AVAIL_ID = _.find(movieData, (itm) => {
+            return parseInt(itm.THEATER_ID) == theaterId && parseInt(itm.SLOT_ID) == slotId
+        }).AVAIL_ID;
+        movieObj.USER_ID = parseInt(userId);
+        movieObj.TICKET_COUNT = parseInt($('#ticketCount').val().trim());
+
+        let signUpData = $.ajax({
+            url: "/movie-booking",
+            method: "POST",
+            data: movieObj
+        });
+
+        signUpData.done((data) => {
+            $('#loadimage').hide();
+            $('#bookingModal').modal('show');
+            const slotId = parseInt($('#slotId').val());
+            const slotDtl = _.find(slotList, (itm) => {
+                return parseInt(itm.SLOT_ID) == slotId
+            }).SLOT_DTL;
+
+            $modal = $('#bookingModal');
+            $modal.find('.modal-title').text('Booking Sucessfull');
+            let $modalBody = $('<div></div>');
+            let $label = $(`<label for="psw"><b>Booking ID:  </b></label>`);
+            let $input = $(`<label for="psw">${data.result[0].BOOKING_ID}</label>`);
+
+            $label.append($input);
+            $label.append($input);
+            $modalBody.append($label);
+
+            $label = $(`<br/><label for="psw"><b>User ID:  </b></label>`);
+            $input = $(`<label for="psw">${data.result[0].USER_ID}</label>`);
+
+            $label.append($input);
+            $label.append($input);
+            $modalBody.append($label);
+
+            $label = $(`<br/><label for="psw"><b>Movie Name:  </b></label>`);
+            $input = $(`<label for="psw">${movieName}</label>`);
+
+            $label.append($input);
+            $label.append($input);
+            $modalBody.append($label);
+
+            $label = $(`<br/><label for="psw"><b>Movie Time:  </b></label>`);
+            $input = $(`<label for="psw">${slotDtl}</label>`);
+
+            $label.append($input);
+            $label.append($input);
+            $modalBody.append($label);
+
+            $label = $(`<br/><label for="psw"><b>No. of Seats:  </b></label>`);
+            $input = $(`<label for="psw">${data.result[0].TICKET_COUNT}</label>`);
+
+            $label.append($input);
+            $label.append($input);[]
+            $modalBody.append($label);
+            $modal.find('.modal-body').empty().append($modalBody);
+        });
+
+        signUpData.fail((jqXHR, textStatus) => {
+            $('#loadimage').hide();
+
+            $modal = $('#bookingModal');
+            $modal.modal('show');
+            $modal.find('.modal-title').text('Booking Error!!!');
+            $modal.find('.modal-body').empty().append('Something went wrong');
+        });
+
+        }
+</script>

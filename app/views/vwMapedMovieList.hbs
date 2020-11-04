@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+
+    </style>
+</head>
+
+<body><br />
+
+    <div class="container">
+        <h2>USER MOVIE LIST</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>MOVIE NAME</th>
+                    <th>THEATER</th>
+                    <th>DATE</th>
+                    <th>TIME SLOT</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each movieList }}
+                <tr>
+                    <td>{{this.MOVIE_NAME}}</td>
+                    <td>{{this.THEATER_NAME}}</td>
+                    <td>{{this.SLOT_DTL}}</td>
+                    <td><a href="./edit-movie-entry?AVAIL_ID={{this.AVAIL_ID}}">EDIT</a></td>
+                </tr>
+                {{/each }}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
+
+<script type="text/javascript">
+
+
+</script>

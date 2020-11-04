@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    /* Full-width input fields */
+    input[type=text],
+    .cust-dropdown,
+    input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    .cust-dropdown {
+        width: 100%;
+        padding: 5px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    input[type=text]:focus,
+    input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    hr {
+        border: 1px solid #f1f1f1;
+        margin-bottom: 25px;
+    }
+
+    /* Set a style for all buttons */
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+    }
+
+    button:hover {
+        opacity: 1;
+    }
+
+    /* Extra styles for the cancel button */
+    .cancelbtn {
+        padding: 14px 20px;
+        background-color: #f44336;
+    }
+
+    /* Float cancel and signup buttons and add an equal width */
+    .cancelbtn,
+    .signupbtn {
+        float: left;
+        width: 50%;
+    }
+
+    /* Add padding to container elements */
+    .container {
+        padding: 16px;
+    }
+
+    /* Clear floats */
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    /* Change styles for cancel button and signup button on extra small screens */
+    @media screen and (max-width: 300px) {
+
+        .cancelbtn,
+        .signupbtn {
+            width: 100%;
+        }
+    }
+</style>
+
+<body><br/>
+
+    <div style="width: 30%; margin: auto;">
+        <div class="container">
+            <h1>Map Registered Movie</h1>
+            <hr>
+
+            <label for="name"><b>Theater</b></label>
+            <select class="form-control cust-dropdown" id="theaterId" name="theaterId" data-validation="required">
+                {{#each theaterList}}
+                    <option value="{{this.THEATER_ID}}">
+                        {{this.THEATER_NAME}}
+                    </option>
+                {{/each}}
+            </select>
+
+            <label for="name"><b>Movie</b></label>
+            <select class="form-control cust-dropdown" id="movieId" name="movieId" data-validation="required">
+                {{#each movieList}}
+                    <option value="{{this.MOVIE_ID}}">
+                        {{this.MOVIE_NAME}}
+                    </option>
+                {{/each}}
+            </select>
+
+            <label for="name"><b>Time Slot</b></label>
+            <select class="form-control cust-dropdown" id="slotId" name="slotId" data-validation="required">
+                {{#each timeSlot}}
+                    <option value="{{this.SLOT_ID}}">
+                        {{this.SLOT_DTL}}
+                    </option>
+                {{/each}}
+            </select>
+
+            <div class="clearfix">
+                <button type="button" class="cancelbtn" id="cancelbtn">Cancel</button>
+                {{#if mapedMovie}}
+                <button type="submit" class="signupbtn" id="updateBtn">Update</button>
+                {{else}}
+                <button type="submit" class="signupbtn" id="mapBtn">Map</button>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading/Processing Image -->
+    <div id="loadimage" style="display: none;">
+        <div class="ScaleLoader" align="center"
+            style="top: 45%;position: fixed;z-index: 9999999;left: 0;right: 0;margin-left: auto;margin-right: auto;">
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.1s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.2s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.3s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.4s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.5s infinite both; display: inline-block;">
+            </div>
+            <p style="font-size: 20px;color: #666;">Loading...</p>
+        </div>
+        <div id="loadingLayer" class="fade-layer"></div>
+    </div>
+    <!-- End Loading Image -->
+</body>
+
+</html>
+
+<script type="text/javascript">
+
+    $('#mapBtn').click(() => {
+        $('#loadimage').show();
+        mapMovie();
+    });
+
+    $('#updateBtn').click(() => {
+        $('#loadimage').show();
+        updateMapedMovie();
+    });
+    
+    {{#if mapedMovie}}
+        const mapedMovieData = {{#if mapedMovie}}{{{JSONstringify mapedMovie}}}{{else}} [] {{/if}};
+        const movieList = {{#if movieList}}{{{JSONstringify movieList}}}{{else}} [] {{/if}};
+        const theaterList = {{#if theaterList}}{{{JSONstringify theaterList}}}{{else}} [] {{/if}};
+        const timeSlot = {{#if timeSlot}}{{{JSONstringify timeSlot}}}{{else}} [] {{/if}};
+        const availId = {{#if availId}} {{availId}} {{else}} ''{{/if}};
+
+        _.each(movieList, function(itm, idx) {
+            if(itm.MOVIE_ID == parseInt(mapedMovieData.MOVIE_ID)){
+                $('#movieId option[value="' + itm.MOVIE_ID +  '"]').prop('selected', true);
+            }
+        });
+
+        _.each(theaterList, function(itm, idx) {
+            if(itm.THEATER_ID == parseInt(mapedMovieData.THEATER_ID)){
+                $('#theaterId option[value="' + itm.THEATER_ID +  '"]').prop('selected', true);
+            }
+        });
+
+        _.each(timeSlot, function(itm, idx) {
+            if(itm.SLOT_ID == parseInt(mapedMovieData.SLOT_ID)){
+                $('#slotId option[value="' + itm.SLOT_ID +  '"]').prop('selected', true);
+            }
+        });
+
+    {{/if}}
+    
+    function updateMapedMovie(){
+
+        let movieObj ={};
+        movieObj.THEATER_ID = parseInt($("#theaterId").val().trim());
+        movieObj.MOVIE_ID = parseInt($("#movieId").val().trim());
+        movieObj.SLOT_ID = parseInt($("#slotId").val().trim());
+        movieObj.AVAIL_ID = parseInt(availId);
+
+        let updateMapedMovie = $.ajax({
+            url: "/edit-movie-entry",
+            method: "POST",
+            data: movieObj
+        });
+
+        updateMapedMovie.done((data) => {
+            $('#loadimage').hide();
+        });
+
+        updateMapedMovie.fail((jqXHR, textStatus) => {
+            $('#loadimage').hide();
+        });
+    
+    }
+
+
+    function mapMovie(){
+
+        let movieObj ={};
+        movieObj.THEATER_ID = parseInt($("#theaterId").val().trim());
+        movieObj.MOVIE_ID = parseInt($("#movieId").val().trim());
+        movieObj.SLOT_ID = parseInt($("#slotId").val().trim());
+
+        let mapMovieData = $.ajax({
+            url: "/map-movie-entry",
+            method: "POST",
+            data: movieObj
+        });
+
+        mapMovieData.done((data) => {
+            $('#loadimage').hide();
+        });
+
+        mapMovieData.fail((jqXHR, textStatus) => {
+            $('#loadimage').hide();
+        });
+    
+    }
+
+</script>

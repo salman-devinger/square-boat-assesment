@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SquareBoat</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+    <div class="bs-example">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./movie-list">Book Movie Model&emsp;&emsp;&emsp;&emsp;&emsp;</a>
+                    <p class="navbar-brand">{{#if userName}}User: {{userName}} {{/if}}</p>
+                </div>
+                <ul class="navbar-nav">
+                    <li class="nav-item"> <a class="nav-link" href="./movie-list"> HOME </a></li>
+                    {{#if userName}}
+                    <li class="nav-item"> <a class="nav-link" href="./user-movie?USER_ID={{userId}}"> MY-MOVIES </a></li>
+                    {{/if}}
+                    {{#if isAdmin}}
+                    <li class="nav-item"> <a class="nav-link" href="./add-theater-movie"> ADD </a></li>
+                    <li class="nav-item"> <a class="nav-link" href="./map-movie-entry"> MAP-MOVIE </a></li>
+                    <li class="nav-item"> <a class="nav-link" href="./movie-entry-list"> EDIT </a></li>
+                    {{/if}}
+                    <li class="nav-item"> <a class="nav-link" href="./sign-up"> SIGN-UP </a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="./log-out"> LOG-OUT </a></li>
+                </ul>
+            </div>
+        </nav>
+
+
+    </div>
+    {{!body will be rendered from res.render(template name);}}
+    {{{body}}}
+</body>
+
+</html>
