@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    .modal-body {
+        margin-left: 20px;
+    }
+    /* Full-width input fields */
+    input[type=text],
+    input[type=number],
+    input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    .cust-dropdown {
+        width: 100%;
+        padding: 5px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    input[type=text]:focus,
+    input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    hr {
+        border: 1px solid #f1f1f1;
+        margin-bottom: 25px;
+    }
+
+    /* Set a style for all buttons */
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+    }
+
+    button:hover {
+        opacity: 1;
+    }
+
+    /* Extra styles for the cancel button */
+    .cancelbtn {
+        padding: 14px 20px;
+        background-color: #f44336;
+    }
+
+    /* Float cancel and signup buttons and add an equal width */
+    .cancelbtn,
+    .signupbtn {
+        float: left;
+        width: 50%;
+    }
+
+    /* Add padding to container elements */
+    .container {
+        padding: 16px;
+    }
+
+    /* Clear floats */
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    /* Change styles for cancel button and signup button on extra small screens */
+    @media screen and (max-width: 300px) {
+
+        .cancelbtn,
+        .signupbtn {
+            width: 100%;
+        }
+    }
+</style>
+
+<body><br />
+
+    <div style="width: 30%; margin: auto;">
+        <div class="container">
+            <h1>Add New Movie/Theater</h1>
+            <hr>
+
+            <label for="name"><b>Type</b></label>
+            <select class="form-control cust-dropdown" id="typeId" name="typeId" data-validation="required">
+                <option value="1">
+                    THEATER
+                </option>
+                <option value="2">
+                    MOVIE
+                </option>
+            </select>
+
+            <label for="psw"><b>Name</b></label>
+            <input type="text" placeholder="Enter Movie/Theater Name" id="name" required>
+
+            <label for="psw"><b>Description</b></label>
+            <input type="text" placeholder="Enter Movie/Theater Description" id="desc" required>
+            
+            <div class="clearfix">
+                <button type="button" class="cancelbtn" id="cancelbtn">Cancel</button>
+                <button type="submit" class="signupbtn" id="addBtn">Add</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal HTML -->
+    <div id="bookingModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Window</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" class="close" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading/Processing Image -->
+    <div id="loadimage" style="display: none;">
+        <div class="ScaleLoader" align="center"
+            style="top: 45%;position: fixed;z-index: 9999999;left: 0;right: 0;margin-left: auto;margin-right: auto;">
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.1s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.2s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.3s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.4s infinite both; display: inline-block;">
+            </div>
+            <div
+                style="background-color: rgb(77, 175, 124); height: 35px; width: 4px; margin: 4px; border-radius: 2px; animation: anim_11507647321202 1s cubic-bezier(0.2, 0.68, 0.18, 1.08) 0.5s infinite both; display: inline-block;">
+            </div>
+            <p style="font-size: 20px;color: #666;">Loading...</p>
+        </div>
+        <div id="loadingLayer" class="fade-layer"></div>
+    </div>
+    <!-- End Loading Image -->
+
+    
+</body>
+
+</html>
+
+<script type="text/javascript">
+    const userId = {{userId}};
+    
+    $('#addBtn').click(() => {
+        $('#loadimage').show();
+        addMovieTheater();
+    });
+
+    function addMovieTheater() {
+
+        const typeId = parseInt($('#typeId').val().trim()),
+            name = $('#name').val().trim(),
+            desc = $('#desc').val().trim();
+
+        let movieObj = {};
+        movieObj.TYPE_ID = typeId;
+        movieObj.NAME = name;
+        movieObj.DESC = desc;
+
+        let signUpData = $.ajax({
+            url: "/add-theater-movie",
+            method: "POST",
+            data: movieObj
+        });
+
+        signUpData.done((data) => {
+            $('#loadimage').hide();
+        });
+
+        signUpData.fail((jqXHR, textStatus) => {
+            $('#loadimage').hide();
+        });
+
+        }
+</script>
